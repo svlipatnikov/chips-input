@@ -1,0 +1,9 @@
+$color-text: #507ec2;
+$color-text-alarm: #ec571c;
+
+@mixin text($color: $color-text) {
+  color: $color;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+}

@@ -1,0 +1,36 @@
+@import '../../scss/variables.scss';
+
+.wrapper {
+  padding: 16px;
+  margin: 8px;
+  background-color: #b4d8e9;
+  border-radius: 4px;
+  height: max-content;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  @include text;
+  margin-right: 16px;
+}
+
+.closeBtn {
+  display: inline-block;
+  stroke: $color-text;
+  background: none;
+  border: none;
+  outline: none;
+
+  width: 20px;
+  height: 20px;
+
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    filter: brightness(50%);
+  }
+}

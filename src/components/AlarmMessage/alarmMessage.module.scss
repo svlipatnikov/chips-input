@@ -1,0 +1,5 @@
+@import '../../scss/variables.scss';
+
+.message {
+  @include text($color-text-alarm);
+}
