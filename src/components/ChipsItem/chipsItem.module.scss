@@ -1,6 +1,7 @@
 @import '../../scss/variables.scss';
 
 .wrapper {
+  position: relative;
   padding: 16px;
   margin: 8px;
   background-color: #b4d8e9;
@@ -12,12 +13,17 @@
   align-items: center;
 }
 
-.text {
+.input {
   @include text;
-  margin-right: 16px;
+  background: none;
+  border: none;
+  outline: none;
 }
 
 .closeBtn {
+  position: absolute;
+  right: 16px;
+
   display: inline-block;
   stroke: $color-text;
   background: none;
