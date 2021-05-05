@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ReactComponent as CloseBtn } from '../../assets/closeBtn.svg';
 import styles from './chipsItem.module.scss';
 
-const ChipsItem = ({ value, onChange, index }) => {
+const ChipsItem = ({ value, onChange, index, setAlarm }) => {
   const [text, setText] = useState(value);
+  const inputRef = useRef(null);
 
   const handleChange = (event) => {
     setText(event.target.value);
-    if (event.target.value === '') onChange('', index);
+    setAlarm(false);
+    if (event.target.value === '') {
+      onChange('', index);
+    }
   };
 
   const handleClick = (event) => {
@@ -15,11 +19,23 @@ const ChipsItem = ({ value, onChange, index }) => {
   };
 
   const handleBlur = () => {
-    if (text !== value) onChange(text, index);
+    if (text.split('"').length % 2 === 0) {
+      setAlarm(true);
+      inputRef.current.focus();
+    } else if (text !== value) {
+      onChange(text, index);
+    }
+    setText((text) =>
+      text
+        .split(',')
+        .filter((item) => item !== '')
+        .join()
+    );
   };
 
   const handleClose = () => {
     onChange('', index);
+    setAlarm(false);
   };
 
   return (
@@ -31,6 +47,7 @@ const ChipsItem = ({ value, onChange, index }) => {
         onClick={handleClick}
         onBlur={handleBlur}
         size={text.length || 1}
+        ref={inputRef}
       />
 
       <button className={styles.closeBtn} onClick={handleClose}>

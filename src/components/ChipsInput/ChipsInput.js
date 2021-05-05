@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import AlarmMessage from '../AlarmMessage/AlarmMessage';
 import ChipsItem from '../ChipsItem/ChipsItem';
+import getChips from '../../helpers/getChips';
 import styles from './chipsInput.module.scss';
 
 const ChipsInput = ({ value, onChange }) => {
@@ -9,6 +10,14 @@ const ChipsInput = ({ value, onChange }) => {
   const [alarm, setAlarm] = useState(false);
 
   const chipsArray = useMemo(() => getChips(value), [value]);
+
+  const onChangeChipsArray = (array) => {
+    if (array.length) {
+      onChange(array.join());
+    } else {
+      onChange('');
+    }
+  };
 
   const handleClick = () => {
     inputRef.current.focus();
@@ -22,13 +31,17 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === ',' && input.split('"').length % 2 === 1) {
+    console.log(event.code);
+    if (event.code === 'Comma' && input.split('"').length % 2 === 1) {
       setTimeout(() => {
         if (input.length > 1) {
           onChange(value + ',' + input);
         }
         setInput('');
       });
+    } else if (event.code === 'Backspace' || event.code === 'Delete') {
+      chipsArray.splice(chipsArray.length - 1, 1);
+      onChangeChipsArray(chipsArray);
     }
   };
 
@@ -39,32 +52,32 @@ const ChipsInput = ({ value, onChange }) => {
         setInput('');
       } else {
         setAlarm(true);
+        inputRef.current.focus();
       }
     }
   };
 
   const handleChipsChange = (newValue, index) => {
-    console.log('handleChipsChange', newValue, index);
-    if (newValue === '') {
+    if (!newValue) {
       chipsArray.splice(index, 1);
     } else {
       chipsArray[index] = newValue;
     }
 
-    if (chipsArray.length) {
-      console.log('join');
-      onChange(chipsArray.join());
-    } else {
-      console.log('empty');
-      onChange('');
-    }
+    onChangeChipsArray(chipsArray);
   };
 
   return (
     <>
       <div className={styles.wrapper} onClick={handleClick}>
         {chipsArray.map((chips, index) => (
-          <ChipsItem key={chips + index} value={chips} index={index} onChange={handleChipsChange} />
+          <ChipsItem
+            key={chips + index}
+            value={chips}
+            index={index}
+            onChange={handleChipsChange}
+            setAlarm={setAlarm}
+          />
         ))}
 
         <input
@@ -86,27 +99,3 @@ const ChipsInput = ({ value, onChange }) => {
 };
 
 export default ChipsInput;
-
-const getChips = (string) => {
-  if (!string.length) return [];
-
-  const chips = [];
-  let quotesFlag = false;
-  let startIndex = 0;
-
-  for (let i = 0; i < string.length; i++) {
-    if (string[i] === '"') quotesFlag = !quotesFlag;
-    if (string[i] === ',') {
-      if (startIndex === i) {
-        startIndex = i + 1;
-      } else if (!quotesFlag) {
-        chips.push(string.substr(startIndex, i - startIndex));
-        startIndex = i + 1;
-      }
-    }
-  }
-  chips.push(string.substr(startIndex, string.length - startIndex));
-
-  console.log(chips);
-  return chips;
-};
