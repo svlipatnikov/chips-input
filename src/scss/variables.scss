@@ -1,7 +1,12 @@
 $color-text: #507ec2;
 $color-text-alarm: #ec571c;
 
+$color-wrapper-background: #d8ecf0;
+$color-chips-background: #b4d8e9;
+$color-chips-background-alarm: #f0957180;
+
 @mixin text($color: $color-text) {
+  font-family: 'Roboto', sans-serif;
   color: $color;
   font-weight: 400;
   font-size: 20px;

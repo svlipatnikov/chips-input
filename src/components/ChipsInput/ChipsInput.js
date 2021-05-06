@@ -31,15 +31,14 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleKeyDown = (event) => {
-    console.log(event.code);
-    if (event.code === 'Comma' && input.split('"').length % 2 === 1) {
+    if (event.key === ',' && input.split('"').length % 2 === 1) {
       setTimeout(() => {
-        if (input.length > 1) {
-          onChange(value + ',' + input);
+        if (input.length) {
+          value ? onChange(value + ',' + input) : onChange(input);
         }
         setInput('');
       });
-    } else if (event.code === 'Backspace' || event.code === 'Delete') {
+    } else if (!input.length && (event.key === 'Backspace' || event.key === 'Delete')) {
       chipsArray.splice(chipsArray.length - 1, 1);
       onChangeChipsArray(chipsArray);
     }
@@ -48,22 +47,17 @@ const ChipsInput = ({ value, onChange }) => {
   const handleBlur = () => {
     if (input.length) {
       if (input.split('"').length % 2 === 1) {
-        onChange(value + ',' + input);
+        value ? onChange(value + ',' + input) : onChange(input);
         setInput('');
       } else {
-        setAlarm(true);
         inputRef.current.focus();
+        setAlarm(true);
       }
     }
   };
 
-  const handleChipsChange = (newValue, index) => {
-    if (!newValue) {
-      chipsArray.splice(index, 1);
-    } else {
-      chipsArray[index] = newValue;
-    }
-
+  const handleChipsChange = (index) => (newValue) => {
+    newValue ? (chipsArray[index] = newValue) : chipsArray.splice(index, 1);
     onChangeChipsArray(chipsArray);
   };
 
@@ -74,22 +68,21 @@ const ChipsInput = ({ value, onChange }) => {
           <ChipsItem
             key={chips + index}
             value={chips}
-            index={index}
-            onChange={handleChipsChange}
+            onChange={handleChipsChange(index)}
             setAlarm={setAlarm}
           />
         ))}
 
         <input
           type="text"
-          value={input}
-          className={styles.input}
-          placeholder={value ? '' : 'Введите ключевые слова'}
           ref={inputRef}
+          value={input}
+          className={alarm ? styles.inputAlarm : styles.inputNorm}
+          placeholder={value ? '' : 'Введите ключевые слова'}
+          size={value ? input.length * 1.1 + 1 : 20}
           onChange={handleInput}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          size={value ? input.length + 1 : 20}
         />
       </div>
 

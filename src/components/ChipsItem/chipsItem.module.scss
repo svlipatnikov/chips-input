@@ -1,16 +1,25 @@
 @import '../../scss/variables.scss';
 
-.wrapper {
+@mixin wrapper {
   position: relative;
   padding: 16px;
   margin: 8px;
-  background-color: #b4d8e9;
   border-radius: 4px;
   height: max-content;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.wrapperNorm {
+  @include wrapper;
+  background-color: $color-chips-background;
+}
+
+.wrapperAlarm {
+  @include wrapper;
+  background-color: $color-chips-background-alarm;
 }
 
 .input {

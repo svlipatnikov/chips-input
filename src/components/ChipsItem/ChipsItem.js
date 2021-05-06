@@ -1,16 +1,23 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ReactComponent as CloseBtn } from '../../assets/closeBtn.svg';
 import styles from './chipsItem.module.scss';
 
-const ChipsItem = ({ value, onChange, index, setAlarm }) => {
+const ChipsItem = ({ value, onChange, setAlarm }) => {
   const [text, setText] = useState(value);
+  const [chipsAlarm, setChipsAlarm] = useState(false);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setAlarm(chipsAlarm);
+  }, [chipsAlarm, setAlarm]);
 
   const handleChange = (event) => {
     setText(event.target.value);
-    setAlarm(false);
+
+    setChipsAlarm(false); //TODO
+
     if (event.target.value === '') {
-      onChange('', index);
+      onChange('');
     }
   };
 
@@ -20,10 +27,10 @@ const ChipsItem = ({ value, onChange, index, setAlarm }) => {
 
   const handleBlur = () => {
     if (text.split('"').length % 2 === 0) {
-      setAlarm(true);
+      setChipsAlarm(true); //TODO
       inputRef.current.focus();
     } else if (text !== value) {
-      onChange(text, index);
+      onChange(text);
     }
     setText((text) =>
       text
@@ -34,19 +41,19 @@ const ChipsItem = ({ value, onChange, index, setAlarm }) => {
   };
 
   const handleClose = () => {
-    onChange('', index);
-    setAlarm(false);
+    onChange('');
+    setChipsAlarm(false); //TODO
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={chipsAlarm ? styles.wrapperAlarm : styles.wrapperNorm}>
       <input
         className={styles.input}
         value={text}
         onChange={handleChange}
         onClick={handleClick}
         onBlur={handleBlur}
-        size={text.length || 1}
+        size={text.length * 1.1 || 1}
         ref={inputRef}
       />
 

@@ -8,7 +8,8 @@ function App() {
   return (
     <div className="App">
       <ChipsInput value={value} onChange={setValue} />
-      <p>Строковое представление: {value}</p>
+      <h5>Строковое представление:</h5>
+      <div>{value}</div>
     </div>
   );
 }
