@@ -3,7 +3,7 @@ import ChipsInput from './components/ChipsInput';
 import './App.css';
 
 function App() {
-  const [value, setValue] = useState('это первый чипс,это "второй," чипс');
+  const [value, setValue] = useState('');
 
   return (
     <div className="App">

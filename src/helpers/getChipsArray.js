@@ -1,4 +1,4 @@
-const getChips = (string) => {
+const getChipsArray = (string) => {
   if (!string.length) return [];
 
   const chips = [];
@@ -23,4 +23,4 @@ const getChips = (string) => {
   return chips;
 };
 
-export default getChips;
+export default getChipsArray;

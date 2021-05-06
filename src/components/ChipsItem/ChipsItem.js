@@ -13,12 +13,8 @@ const ChipsItem = ({ value, onChange, setAlarm }) => {
 
   const handleChange = (event) => {
     setText(event.target.value);
-
-    setChipsAlarm(false); //TODO
-
-    if (event.target.value === '') {
-      onChange('');
-    }
+    setChipsAlarm(false);
+    !event.target.value && onChange('');
   };
 
   const handleClick = (event) => {
@@ -27,22 +23,27 @@ const ChipsItem = ({ value, onChange, setAlarm }) => {
 
   const handleBlur = () => {
     if (text.split('"').length % 2 === 0) {
-      setChipsAlarm(true); //TODO
+      setChipsAlarm(true);
       inputRef.current.focus();
     } else if (text !== value) {
-      onChange(text);
+      onChange(
+        text
+          .split(',')
+          .filter((item) => !!item)
+          .join()
+      );
+      setText(
+        text
+          .split(',')
+          .filter((item) => !!item)
+          .join()
+      );
     }
-    setText((text) =>
-      text
-        .split(',')
-        .filter((item) => item !== '')
-        .join()
-    );
   };
 
   const handleClose = () => {
     onChange('');
-    setChipsAlarm(false); //TODO
+    if (chipsAlarm) setAlarm(false);
   };
 
   return (
@@ -53,7 +54,7 @@ const ChipsItem = ({ value, onChange, setAlarm }) => {
         onChange={handleChange}
         onClick={handleClick}
         onBlur={handleBlur}
-        size={text.length * 1.1 || 1}
+        size={text.length + 2 || 1}
         ref={inputRef}
       />
 

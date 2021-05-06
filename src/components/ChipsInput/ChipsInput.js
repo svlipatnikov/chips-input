@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
 import AlarmMessage from '../AlarmMessage/AlarmMessage';
 import ChipsItem from '../ChipsItem/ChipsItem';
-import getChips from '../../helpers/getChips';
+import getChipsArray from '../../helpers/getChipsArray';
 import styles from './chipsInput.module.scss';
 
 const ChipsInput = ({ value, onChange }) => {
@@ -9,7 +9,7 @@ const ChipsInput = ({ value, onChange }) => {
   const [input, setInput] = useState('');
   const [alarm, setAlarm] = useState(false);
 
-  const chipsArray = useMemo(() => getChips(value), [value]);
+  const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
   const onChangeChipsArray = (array) => {
     if (array.length) {
@@ -79,7 +79,7 @@ const ChipsInput = ({ value, onChange }) => {
           value={input}
           className={alarm ? styles.inputAlarm : styles.inputNorm}
           placeholder={value ? '' : 'Введите ключевые слова'}
-          size={value ? input.length * 1.1 + 1 : 20}
+          size={value ? input.length + 1 : 22}
           onChange={handleInput}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
