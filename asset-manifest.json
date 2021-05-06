@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/chips-input/static/css/main.86d04229.chunk.css",
+    "main.js": "/chips-input/static/js/main.55cd5726.chunk.js",
+    "main.js.map": "/chips-input/static/js/main.55cd5726.chunk.js.map",
+    "runtime-main.js": "/chips-input/static/js/runtime-main.e58b907c.js",
+    "runtime-main.js.map": "/chips-input/static/js/runtime-main.e58b907c.js.map",
+    "static/js/2.f315716c.chunk.js": "/chips-input/static/js/2.f315716c.chunk.js",
+    "static/js/2.f315716c.chunk.js.map": "/chips-input/static/js/2.f315716c.chunk.js.map",
+    "index.html": "/chips-input/index.html",
+    "static/css/main.86d04229.chunk.css.map": "/chips-input/static/css/main.86d04229.chunk.css.map",
+    "static/js/2.f315716c.chunk.js.LICENSE.txt": "/chips-input/static/js/2.f315716c.chunk.js.LICENSE.txt",
+    "static/media/closeBtn.1acd6236.svg": "/chips-input/static/media/closeBtn.1acd6236.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e58b907c.js",
+    "static/js/2.f315716c.chunk.js",
+    "static/css/main.86d04229.chunk.css",
+    "static/js/main.55cd5726.chunk.js"
+  ]
+}
