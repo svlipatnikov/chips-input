@@ -2,31 +2,25 @@
 
 .wrapper {
   width: 768px;
-
   padding: 16px;
-  background-color: $color-wrapper-background;
   border-radius: 8px;
+  background-color: $color-wrapper-background;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  align-items: center;
 }
 
-@mixin input {
+.input {
   height: 25px;
-  padding: 16px;
-  margin: 8px;
+  margin: 16px;
   outline: none;
   border: none;
+  @include text($color-text);
   background: none;
 }
 
-.inputNorm {
-  @include input;
-  @include text($color-text);
-}
-
 .inputAlarm {
-  @include input;
   @include text($color-text-alarm);
 }

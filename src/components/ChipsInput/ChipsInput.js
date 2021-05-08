@@ -1,13 +1,21 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import AlarmMessage from '../AlarmMessage/AlarmMessage';
 import ChipsItem from '../ChipsItem/ChipsItem';
 import getChipsArray from '../../helpers/getChipsArray';
+import cn from 'classnames';
 import styles from './chipsInput.module.scss';
 
 const ChipsInput = ({ value, onChange }) => {
   const inputRef = useRef(null);
   const [input, setInput] = useState('');
   const [alarm, setAlarm] = useState(false);
+  const [selection, setSelection] = useState({
+    isSelected: false,
+    xStart: null,
+    yStart: null,
+    xEnd: null,
+    yEnd: null,
+  });
 
   const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
@@ -17,10 +25,6 @@ const ChipsInput = ({ value, onChange }) => {
     } else {
       onChange('');
     }
-  };
-
-  const handleClick = () => {
-    inputRef.current.focus();
   };
 
   const handleInput = (event) => {
@@ -61,15 +65,65 @@ const ChipsInput = ({ value, onChange }) => {
     onChangeChipsArray(chipsArray);
   };
 
+  useEffect(() => {
+    const handleMouseDown = (event) => {
+      setSelection((selection) => ({
+        ...selection,
+        isSelected: true,
+        xStart: event.pageX,
+        yStart: event.pageY,
+        xEnd: event.pageX,
+        yEnd: event.pageY,
+      }));
+    };
+
+    const handleMouseMove = (event) => {
+      selection.isSelected &&
+        setSelection((selection) => ({ ...selection, xEnd: event.pageX, yEnd: event.pageY }));
+    };
+
+    const handleMouseUp = (event) => {
+      setSelection((selection) => ({
+        ...selection,
+        isSelected: false,
+        // xStart: event.pageX,
+        // yStart: event.pageY,
+        // xEnd: event.pageX,
+        // yEnd: event.pageY,
+      }));
+
+      if (selection.xStart === selection.xEnd && selection.yStart === selection.yEnd) {
+        inputRef.current.focus();
+      }
+    };
+
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [selection.isSelected, selection.xEnd, selection.xStart, selection.yEnd, selection.yStart]);
+
   return (
     <>
-      <div className={styles.wrapper} onClick={handleClick}>
+      <div
+        className={styles.wrapper}
+        // onMouseUp={handleMouseUp}
+        // onMouseDown={handleMouseDown}
+        // onMouseMove={handleMouseMove}
+        // onMouseLeave={handleMouseLeave}
+      >
         {chipsArray.map((chips, index) => (
           <ChipsItem
             key={chips + index}
             value={chips}
             onChange={handleChipsChange(index)}
             setAlarm={setAlarm}
+            selection={selection}
           />
         ))}
 
@@ -77,7 +131,10 @@ const ChipsInput = ({ value, onChange }) => {
           type="text"
           ref={inputRef}
           value={input}
-          className={alarm ? styles.inputAlarm : styles.inputNorm}
+          className={cn({
+            [styles.input]: true,
+            [styles.inputAlarm]: alarm,
+          })}
           placeholder={value ? '' : 'Введите ключевые слова'}
           size={value ? input.length + 1 : 22}
           onChange={handleInput}

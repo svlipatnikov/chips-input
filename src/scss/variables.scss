@@ -4,6 +4,9 @@ $color-text-alarm: #ec571c;
 $color-wrapper-background: #d8ecf0;
 $color-chips-background: #b4d8e9;
 $color-chips-background-alarm: #f0957180;
+$color-chips-background-select: #9dcadf;
+
+$color-chips-border-select: #7daec5;
 
 @mixin text($color: $color-text) {
   font-family: 'Roboto', monospace, sans-serif;

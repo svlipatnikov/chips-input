@@ -1,25 +1,27 @@
 @import '../../scss/variables.scss';
 
-@mixin wrapper {
+.wrapper {
   position: relative;
-  padding: 16px;
-  margin: 8px;
   border-radius: 4px;
-  height: max-content;
+  background-color: $color-chips-background;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
 
-.wrapperNorm {
-  @include wrapper;
-  background-color: $color-chips-background;
+  padding: 8px;
+  margin: 8px;
+  height: max-content;
 }
 
 .wrapperAlarm {
-  @include wrapper;
   background-color: $color-chips-background-alarm;
+}
+
+.wrapperSelect {
+  background-color: $color-chips-background-select;
+  border: $color-chips-border-select solid 3px;
+  padding: 5px;
 }
 
 .input {
@@ -48,4 +50,8 @@
   &:hover {
     filter: brightness(50%);
   }
+}
+
+.closeBtnSelect {
+  right: 13px;
 }

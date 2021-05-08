@@ -1,11 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { ReactComponent as CloseBtn } from '../../assets/closeBtn.svg';
+import cn from 'classnames';
 import styles from './chipsItem.module.scss';
 
-const ChipsItem = ({ value, onChange, setAlarm }) => {
+const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
   const [text, setText] = useState(value);
   const [chipsAlarm, setChipsAlarm] = useState(false);
   const inputRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  let chipsPosition = null;
+  if (wrapperRef && wrapperRef.current) {
+    chipsPosition = wrapperRef.current.getBoundingClientRect();
+  }
+
+  const chipsSelect = useMemo(() => isChipsSelected(selection, chipsPosition), [
+    selection,
+    chipsPosition,
+  ]);
+
+  console.log(chipsSelect);
 
   useEffect(() => {
     setAlarm(chipsAlarm);
@@ -46,19 +60,28 @@ const ChipsItem = ({ value, onChange, setAlarm }) => {
     if (chipsAlarm) setAlarm(false);
   };
 
+  const chipsStyle = cn({
+    [styles.wrapper]: true,
+    [styles.wrapperAlarm]: chipsAlarm,
+    [styles.wrapperSelect]: chipsSelect,
+  });
+
   return (
-    <div className={chipsAlarm ? styles.wrapperAlarm : styles.wrapperNorm}>
+    <div className={chipsStyle} ref={wrapperRef}>
       <input
         className={styles.input}
         value={text}
         onChange={handleChange}
         onClick={handleClick}
         onBlur={handleBlur}
-        size={text.length + 2 || 1}
+        size={text.length + 2}
         ref={inputRef}
       />
 
-      <button className={styles.closeBtn} onClick={handleClose}>
+      <button
+        className={cn({ [styles.closeBtn]: true, [styles.closeBtnSelect]: chipsSelect })}
+        onClick={handleClose}
+      >
         <CloseBtn />
       </button>
     </div>
@@ -66,3 +89,44 @@ const ChipsItem = ({ value, onChange, setAlarm }) => {
 };
 
 export default ChipsItem;
+
+const isChipsSelected = (selection, chipsPosition) => {
+  if (!chipsPosition) return false;
+
+  const { left, right, top, bottom } = chipsPosition;
+  const selectionTop = selection.yStart < selection.yEnd ? selection.yStart : selection.yEnd;
+  const selectionBottom = selection.yStart > selection.yEnd ? selection.yStart : selection.yEnd;
+  const selectionLeft = selection.xStart < selection.xEnd ? selection.xStart : selection.xEnd;
+  const selectionRight = selection.xStart > selection.xEnd ? selection.xStart : selection.xEnd;
+
+  // селект ниже чипса
+  if (selectionTop > bottom) {
+    return false;
+  }
+
+  // верхняя граница селекта внутри чипса
+  if (selectionTop < bottom && selectionTop > top) {
+    if (selectionLeft < right) {
+      return true;
+    }
+    return false;
+  }
+
+  // чипс полность входит в селект
+  if (selectionTop < top && selectionBottom > bottom) {
+    return true;
+  }
+
+  // нижняя граница селекта внутри чипса
+  if (selectionBottom > top && selectionBottom < bottom) {
+    if (selectionRight > left) {
+      return true;
+    }
+    return false;
+  }
+
+  // селект выше чипса
+  if (selectionBottom < top) {
+    return false;
+  }
+};
