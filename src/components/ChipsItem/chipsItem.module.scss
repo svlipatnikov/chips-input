@@ -33,19 +33,17 @@
 
 .closeBtn {
   position: absolute;
-  right: 16px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
 
   display: inline-block;
-  stroke: $color-text;
   background: none;
   border: none;
   outline: none;
-
-  width: 20px;
-  height: 20px;
-
-  padding: 0;
-  margin: 0;
+  stroke: $color-text;
 
   &:hover {
     filter: brightness(50%);
@@ -53,5 +51,5 @@
 }
 
 .closeBtnSelect {
-  right: 13px;
+  right: 5px;
 }

@@ -17,8 +17,8 @@
   margin: 16px;
   outline: none;
   border: none;
-  @include text($color-text);
   background: none;
+  @include text($color-text);
 }
 
 .inputAlarm {

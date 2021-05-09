@@ -20,18 +20,12 @@ const ChipsInput = ({ value, onChange }) => {
   const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
   const onChangeChipsArray = (array) => {
-    if (array.length) {
-      onChange(array.join());
-    } else {
-      onChange('');
-    }
+    array.length ? onChange(array.filter((item) => !!item).join()) : onChange('');
   };
 
   const handleInput = (event) => {
     setInput(event.target.value);
-    if (alarm) {
-      setAlarm(false);
-    }
+    alarm && setAlarm(false);
   };
 
   const handleKeyDown = (event) => {
@@ -61,8 +55,14 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleChipsChange = (index) => (newValue) => {
-    newValue ? (chipsArray[index] = newValue) : chipsArray.splice(index, 1);
+    chipsArray[index] = newValue;
     onChangeChipsArray(chipsArray);
+  };
+
+  const handleclick = () => {
+    if (selection.xStart === selection.xEnd && selection.yStart === selection.yEnd) {
+      inputRef.current.focus();
+    }
   };
 
   useEffect(() => {
@@ -82,19 +82,11 @@ const ChipsInput = ({ value, onChange }) => {
         setSelection((selection) => ({ ...selection, xEnd: event.pageX, yEnd: event.pageY }));
     };
 
-    const handleMouseUp = (event) => {
+    const handleMouseUp = () => {
       setSelection((selection) => ({
         ...selection,
         isSelected: false,
-        // xStart: event.pageX,
-        // yStart: event.pageY,
-        // xEnd: event.pageX,
-        // yEnd: event.pageY,
       }));
-
-      if (selection.xStart === selection.xEnd && selection.yStart === selection.yEnd) {
-        inputRef.current.focus();
-      }
     };
 
     window.addEventListener('mouseup', handleMouseUp);
@@ -110,13 +102,7 @@ const ChipsInput = ({ value, onChange }) => {
 
   return (
     <>
-      <div
-        className={styles.wrapper}
-        // onMouseUp={handleMouseUp}
-        // onMouseDown={handleMouseDown}
-        // onMouseMove={handleMouseMove}
-        // onMouseLeave={handleMouseLeave}
-      >
+      <div className={styles.wrapper} onClick={handleclick}>
         {chipsArray.map((chips, index) => (
           <ChipsItem
             key={chips + index}
