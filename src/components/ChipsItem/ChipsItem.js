@@ -5,8 +5,6 @@ import styles from './chipsItem.module.scss';
 import isChipsSelected from '../../helpers/isChipsSelected';
 
 const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
-  console.log('ChipsItem');
-
   const [text, setText] = useState(value);
   const [chipsAlarm, setChipsAlarm] = useState(false);
   const inputRef = useRef(null);
@@ -72,7 +70,7 @@ const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
     const handleKeyDown = (event) => {
       if (event.key === 'Delete' && chipsSelect === true) {
         setTimeout(() => {
-          onChange('');
+          onChange('', index);
         });
       }
     };
@@ -81,7 +79,7 @@ const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [chipsAlarm, chipsSelect, onChange, setAlarm]);
+  }, [chipsAlarm, chipsSelect, index, onChange, setAlarm]);
 
   return (
     <div className={chipsStyle} ref={wrapperRef}>

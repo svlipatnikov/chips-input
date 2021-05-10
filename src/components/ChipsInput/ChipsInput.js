@@ -9,7 +9,13 @@ const ChipsInput = ({ value, onChange }) => {
   const inputRef = useRef(null);
   const [input, setInput] = useState('');
   const [alarm, setAlarm] = useState(false);
-  const selection = useRef();
+  const [selection, setSelection] = useState({
+    isSelected: false,
+    xStart: 0,
+    yStart: 0,
+    xEnd: 0,
+    yEnd: 0,
+  });
 
   const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
@@ -52,6 +58,14 @@ const ChipsInput = ({ value, onChange }) => {
 
   const handleChipsChange = useCallback(
     (newValue, index) => {
+      !newValue &&
+        setSelection({
+          isSelected: false,
+          xStart: 0,
+          yStart: 0,
+          xEnd: 0,
+          yEnd: 0,
+        });
       chipsArray[index] = newValue;
       chipsArray.length ? onChange(chipsArray.filter((item) => !!item).join()) : onChange('');
     },
@@ -59,22 +73,31 @@ const ChipsInput = ({ value, onChange }) => {
   );
 
   useEffect(() => {
-    selection.current = { xStart: 0, yStart: 0, xEnd: 0, yEnd: 0 };
-
     const handleMouseDown = (event) => {
-      selection.current.xStart = event.pageX;
-      selection.current.yStart = event.pageY;
-      selection.current.xEnd = event.pageX;
-      selection.current.yEnd = event.pageY;
+      setSelection({
+        isSelected: true,
+        xStart: event.pageX,
+        yStart: event.pageY,
+        xEnd: event.pageX,
+        yEnd: event.pageY,
+      });
     };
 
     const handleMouseMove = (event) => {
-      selection.current.xEnd = event.pageX;
-      selection.current.yEnd = event.pageY;
+      if (
+        selection.isSelected &&
+        (Math.abs(event.pageX - selection.xEnd) > 10 || Math.abs(event.pageY - selection.yEnd) > 10)
+      ) {
+        setSelection((selection) => ({
+          ...selection,
+          xEnd: event.pageX,
+          yEnd: event.pageY,
+        }));
+      }
     };
 
     const handleMouseUp = () => {
-      // selection.current.isSelected = false;
+      setSelection((selection) => ({ ...selection, isSelected: false }));
     };
 
     window.addEventListener('mouseup', handleMouseUp);
@@ -98,7 +121,7 @@ const ChipsInput = ({ value, onChange }) => {
             index={index}
             onChange={handleChipsChange}
             setAlarm={setAlarm}
-            selection={selection.current}
+            selection={selection}
           />
         ))}
 
