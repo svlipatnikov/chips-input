@@ -9,13 +9,7 @@ const ChipsInput = ({ value, onChange }) => {
   const inputRef = useRef(null);
   const [input, setInput] = useState('');
   const [alarm, setAlarm] = useState(false);
-  const [selection, setSelection] = useState({
-    isSelected: false,
-    xStart: null,
-    yStart: null,
-    xEnd: null,
-    yEnd: null,
-  });
+  const selection = useRef();
 
   const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
@@ -65,27 +59,22 @@ const ChipsInput = ({ value, onChange }) => {
   );
 
   useEffect(() => {
+    selection.current = { xStart: 0, yStart: 0, xEnd: 0, yEnd: 0 };
+
     const handleMouseDown = (event) => {
-      setSelection((selection) => ({
-        ...selection,
-        isSelected: true,
-        xStart: event.pageX,
-        yStart: event.pageY,
-        xEnd: event.pageX,
-        yEnd: event.pageY,
-      }));
+      selection.current.xStart = event.pageX;
+      selection.current.yStart = event.pageY;
+      selection.current.xEnd = event.pageX;
+      selection.current.yEnd = event.pageY;
     };
 
     const handleMouseMove = (event) => {
-      selection.isSelected &&
-        setSelection((selection) => ({ ...selection, xEnd: event.pageX, yEnd: event.pageY }));
+      selection.current.xEnd = event.pageX;
+      selection.current.yEnd = event.pageY;
     };
 
     const handleMouseUp = () => {
-      setSelection((selection) => ({
-        ...selection,
-        isSelected: false,
-      }));
+      // selection.current.isSelected = false;
     };
 
     window.addEventListener('mouseup', handleMouseUp);
@@ -109,7 +98,7 @@ const ChipsInput = ({ value, onChange }) => {
             index={index}
             onChange={handleChipsChange}
             setAlarm={setAlarm}
-            selection={selection}
+            selection={selection.current}
           />
         ))}
 

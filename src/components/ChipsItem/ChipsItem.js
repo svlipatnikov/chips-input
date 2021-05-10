@@ -6,6 +6,7 @@ import isChipsSelected from '../../helpers/isChipsSelected';
 
 const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
   console.log('ChipsItem');
+
   const [text, setText] = useState(value);
   const [chipsAlarm, setChipsAlarm] = useState(false);
   const inputRef = useRef(null);
