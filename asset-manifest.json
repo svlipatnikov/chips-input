@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/chips-input/static/css/main.4cbc1d3a.chunk.css",
-    "main.js": "/chips-input/static/js/main.b478ef9f.chunk.js",
-    "main.js.map": "/chips-input/static/js/main.b478ef9f.chunk.js.map",
+    "main.js": "/chips-input/static/js/main.6f92e78a.chunk.js",
+    "main.js.map": "/chips-input/static/js/main.6f92e78a.chunk.js.map",
     "runtime-main.js": "/chips-input/static/js/runtime-main.e58b907c.js",
     "runtime-main.js.map": "/chips-input/static/js/runtime-main.e58b907c.js.map",
     "static/js/2.9c44cdca.chunk.js": "/chips-input/static/js/2.9c44cdca.chunk.js",
@@ -16,6 +16,6 @@
     "static/js/runtime-main.e58b907c.js",
     "static/js/2.9c44cdca.chunk.js",
     "static/css/main.4cbc1d3a.chunk.css",
-    "static/js/main.b478ef9f.chunk.js"
+    "static/js/main.6f92e78a.chunk.js"
   ]
 }
