@@ -1,5 +1,4 @@
 const isChipsSelected = (selection, chipsPosition) => {
-  console.log('isChipsSelected');
   if (!chipsPosition) return false;
 
   const { left, right, top, bottom } = chipsPosition;

@@ -4,7 +4,8 @@ import cn from 'classnames';
 import styles from './chipsItem.module.scss';
 import isChipsSelected from '../../helpers/isChipsSelected';
 
-const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
+const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
+  console.log('ChipsItem');
   const [text, setText] = useState(value);
   const [chipsAlarm, setChipsAlarm] = useState(false);
   const inputRef = useRef(null);
@@ -27,7 +28,7 @@ const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
   const handleChange = (event) => {
     setText(event.target.value);
     setChipsAlarm(false);
-    !event.target.value && onChange('');
+    !event.target.value && onChange('', index);
   };
 
   const handleClick = (event) => {
@@ -43,7 +44,8 @@ const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
         text
           .split(',')
           .filter((item) => !!item)
-          .join()
+          .join(),
+        index
       );
       setText(
         text
@@ -55,7 +57,7 @@ const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
   };
 
   const handleClose = () => {
-    onChange('');
+    onChange('', index);
     chipsAlarm && setAlarm(false);
   };
 
@@ -102,4 +104,4 @@ const ChipsItem = ({ value, onChange, setAlarm, selection }) => {
   );
 };
 
-export default ChipsItem;
+export default React.memo(ChipsItem);

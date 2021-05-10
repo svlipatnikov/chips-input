@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AlarmMessage from '../AlarmMessage/AlarmMessage';
 import ChipsItem from '../ChipsItem/ChipsItem';
 import getChipsArray from '../../helpers/getChipsArray';
@@ -19,13 +19,27 @@ const ChipsInput = ({ value, onChange }) => {
 
   const chipsArray = useMemo(() => getChipsArray(value), [value]);
 
-  const onChangeChipsArray = (array) => {
-    array.length ? onChange(array.filter((item) => !!item).join()) : onChange('');
+  const handleWrapperClick = () => {
+    if (selection.xStart === selection.xEnd && selection.yStart === selection.yEnd) {
+      inputRef.current.focus();
+    }
   };
 
-  const handleInput = (event) => {
+  const handleInputChange = (event) => {
     setInput(event.target.value);
     alarm && setAlarm(false);
+  };
+
+  const handleInputBlur = () => {
+    if (input.length) {
+      if (input.split('"').length % 2 === 1) {
+        value ? onChange(value + ',' + input) : onChange(input);
+        setInput('');
+      } else {
+        inputRef.current.focus();
+        setAlarm(true);
+      }
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -38,32 +52,17 @@ const ChipsInput = ({ value, onChange }) => {
       });
     } else if (!input.length && (event.key === 'Backspace' || event.key === 'Delete')) {
       chipsArray.splice(chipsArray.length - 1, 1);
-      onChangeChipsArray(chipsArray);
+      chipsArray.length ? onChange(chipsArray.filter((item) => !!item).join()) : onChange('');
     }
   };
 
-  const handleBlur = () => {
-    if (input.length) {
-      if (input.split('"').length % 2 === 1) {
-        value ? onChange(value + ',' + input) : onChange(input);
-        setInput('');
-      } else {
-        inputRef.current.focus();
-        setAlarm(true);
-      }
-    }
-  };
-
-  const handleChipsChange = (index) => (newValue) => {
-    chipsArray[index] = newValue;
-    onChangeChipsArray(chipsArray);
-  };
-
-  const handleclick = () => {
-    if (selection.xStart === selection.xEnd && selection.yStart === selection.yEnd) {
-      inputRef.current.focus();
-    }
-  };
+  const handleChipsChange = useCallback(
+    (newValue, index) => {
+      chipsArray[index] = newValue;
+      chipsArray.length ? onChange(chipsArray.filter((item) => !!item).join()) : onChange('');
+    },
+    [chipsArray, onChange]
+  );
 
   useEffect(() => {
     const handleMouseDown = (event) => {
@@ -102,12 +101,13 @@ const ChipsInput = ({ value, onChange }) => {
 
   return (
     <>
-      <div className={styles.wrapper} onClick={handleclick}>
+      <div className={styles.wrapper} onClick={handleWrapperClick}>
         {chipsArray.map((chips, index) => (
           <ChipsItem
             key={chips + index}
             value={chips}
-            onChange={handleChipsChange(index)}
+            index={index}
+            onChange={handleChipsChange}
             setAlarm={setAlarm}
             selection={selection}
           />
@@ -123,9 +123,9 @@ const ChipsInput = ({ value, onChange }) => {
           })}
           placeholder={value ? '' : 'Введите ключевые слова'}
           size={value ? input.length + 1 : 22}
-          onChange={handleInput}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onBlur={handleBlur}
+          onBlur={handleInputBlur}
         />
       </div>
 
