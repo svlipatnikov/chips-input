@@ -20,6 +20,10 @@ const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
     selection,
   ]);
 
+  if (selection.isDelPressed && chipsSelect) {
+    onChange('', index);
+  }
+
   useEffect(() => {
     setAlarm(chipsAlarm);
   }, [chipsAlarm, setAlarm]);
@@ -65,21 +69,6 @@ const ChipsItem = ({ value, onChange, setAlarm, selection, index }) => {
     [styles.wrapperAlarm]: chipsAlarm,
     [styles.wrapperSelect]: chipsSelect,
   });
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Delete' && chipsSelect === true) {
-        setTimeout(() => {
-          onChange('', index);
-        });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [chipsAlarm, chipsSelect, index, onChange, setAlarm]);
 
   return (
     <div className={chipsStyle} ref={wrapperRef}>
