@@ -11,6 +11,7 @@ const ChipsInput = ({ value, onChange }) => {
   const [alarm, setAlarm] = useState(false);
   const [selection, setSelection] = useState({
     isSelected: false,
+    isDelPressed: false,
     xStart: 0,
     yStart: 0,
     xEnd: 0,
@@ -26,7 +27,12 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleInputChange = (event) => {
-    setInput(event.target.value);
+    if (
+      event.target.value[event.target.value.length - 1] !== ',' ||
+      event.target.value.split('"').length % 2 === 0
+    ) {
+      setInput(event.target.value);
+    }
     alarm && setAlarm(false);
   };
 
@@ -43,13 +49,9 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === ',' && input.split('"').length % 2 === 1) {
-      setTimeout(() => {
-        if (input.length) {
-          value ? onChange(value + ',' + input) : onChange(input);
-        }
-        setInput('');
-      });
+    if (event.key === ',' && input.length > 1 && input.split('"').length % 2 === 1) {
+      value ? onChange(value + ',' + input) : onChange(input);
+      setInput('');
     } else if (!input.length && (event.key === 'Backspace' || event.key === 'Delete')) {
       chipsArray.splice(chipsArray.length - 1, 1);
       chipsArray.length ? onChange(chipsArray.filter((item) => !!item).join()) : onChange('');
@@ -60,6 +62,7 @@ const ChipsInput = ({ value, onChange }) => {
     (newValue, index) => {
       !newValue &&
         setSelection({
+          isDelPressed: false,
           isSelected: false,
           xStart: 0,
           yStart: 0,
@@ -67,33 +70,43 @@ const ChipsInput = ({ value, onChange }) => {
           yEnd: 0,
         });
       chipsArray[index] = newValue;
-      chipsArray.length ? onChange(chipsArray.filter((item) => !!item).join()) : onChange('');
+      onChange(chipsArray.filter((item) => !!item).join());
     },
     [chipsArray, onChange]
   );
 
   useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Delete') {
+        setSelection((selection) => ({ ...selection, isDelPressed: true }));
+      }
+    };
+
     const handleMouseDown = (event) => {
-      setSelection({
+      setSelection((selection) => ({
+        ...selection,
         isSelected: true,
         xStart: event.pageX,
         yStart: event.pageY,
         xEnd: event.pageX,
         yEnd: event.pageY,
-      });
+      }));
     };
 
     const handleMouseMove = (event) => {
-      if (
-        selection.isSelected &&
-        (Math.abs(event.pageX - selection.xEnd) > 10 || Math.abs(event.pageY - selection.yEnd) > 10)
-      ) {
-        setSelection((selection) => ({
-          ...selection,
-          xEnd: event.pageX,
-          yEnd: event.pageY,
-        }));
-      }
+      setSelection((selection) => {
+        if (
+          selection.isSelected &&
+          (Math.abs(event.pageX - selection.xEnd) > 10 ||
+            Math.abs(event.pageY - selection.yEnd) > 10)
+        )
+          return {
+            ...selection,
+            xEnd: event.pageX,
+            yEnd: event.pageY,
+          };
+        return selection;
+      });
     };
 
     const handleMouseUp = () => {
@@ -103,13 +116,15 @@ const ChipsInput = ({ value, onChange }) => {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selection.isSelected, selection.xEnd, selection.xStart, selection.yEnd, selection.yStart]);
+  }, []);
 
   return (
     <>
