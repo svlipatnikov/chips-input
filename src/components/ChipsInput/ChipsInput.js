@@ -27,7 +27,10 @@ const ChipsInput = ({ value, onChange }) => {
   };
 
   const handleInputChange = (event) => {
-    if (event.target.value.split(',').length === 1) {
+    if (
+      event.target.value[event.target.value.length - 1] !== ',' ||
+      event.target.value.split('"').length % 2 === 0
+    ) {
       setInput(event.target.value);
     }
     alarm && setAlarm(false);
